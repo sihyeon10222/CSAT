@@ -163,110 +163,7 @@ function calculateProgress(pastDate, upcomingDate) {
     return progress;
 }
 
-// 슬롯머신 상태 관리
-let isSlotMachineRunning = true;
-const SLOT_DURATION = 800; // 0.8초
 
-// 슬롯머신 스트립 생성 (0~9 반복)
-function createSlotStrip(targetNum) {
-    const strip = document.createElement('div');
-    strip.className = 'slot-strip';
-
-    // 반복 횟수 (충분히 길게)
-    // 숫자가 위로 올라가야 하므로, 0부터 시작해서 목표 숫자가 맨 아래쪽에 오도록 배치
-    // 예: target이 3이면 ... 9 0 1 2 3 [끝]
-    // 하지만 "위에서 아래로, 아래에서 위로" 섞어서 랜덤성을 주고 싶다면
-    // transform: translateY를 조작.
-    // 여기서는 심플하게: [9 8 ... 0] x 3세트 + [9 ... target] 
-    // translateY를 -100% * index 로 이동시켜서 애니메이션.
-
-    // 심플한 방식: 0~9를 10번 반복해서 쌓아둠.
-    let content = '';
-    const repeat = 5; // 5세트 반복
-
-    for (let i = 0; i < repeat; i++) {
-        for (let j = 0; j <= 9; j++) {
-            content += `<div class="slot-number">${j}</div>`;
-        }
-    }
-
-    // 마지막에 목표 숫자까지 추가
-    for (let j = 0; j <= parseInt(targetNum); j++) {
-        content += `<div class="slot-number">${j}</div>`;
-    }
-
-    strip.innerHTML = content;
-    return strip;
-}
-
-// 슬롯머신 초기화
-function initSlotMachine(element, targetText) {
-    if (!element) return;
-
-    element.innerHTML = '';
-    element.classList.add('slot-wrapper');
-
-    // 문자열 파싱 (예: "300:15:30:20:99")
-    const chars = targetText.split('');
-
-    chars.forEach((char, index) => {
-        const digitWrapper = document.createElement('div');
-        digitWrapper.className = 'slot-digit';
-
-        if (char === ':') {
-            digitWrapper.classList.add('colon');
-            digitWrapper.textContent = ':';
-        } else {
-            const num = parseInt(char);
-            if (isNaN(num)) {
-                digitWrapper.textContent = char;
-            } else {
-                const strip = createSlotStrip(num);
-                // 초기 위치: 0 위치에 있도록 조정하거나 랜덤 시작점
-                // 여기서는 "위에서 아래로" 떨어지는 효과를 위해
-                // 스트립 전체 높이에서 조금 위쪽에서 시작해서 target 위치로 떨어지게 함.
-
-                // 스트립 안의 숫자 개수 (10 * 5 + target + 1)
-                const totalItems = 10 * 5 + num + 1;
-                const itemHeight = 1.2; // em 단위
-
-                // 최종 목표 위치: 밑바닥 ( target이 맨 마지막에 있으므로)
-                // translateY를 (totalItems - 1) * itemHeight * -1 em 만큼 이동
-                const finalY = (totalItems - 1) * -100; // % 단위로 그냥 이동 (height: 100% 기준 아님. top 기준)
-
-                // 시작 위치: 0 (맨 위 0번 숫자)
-                strip.style.transform = `translateY(0)`;
-
-                digitWrapper.appendChild(strip);
-
-                // 애니메이션 트리거 (비동기)
-                setTimeout(() => {
-                    // 각 자릿수마다 약간의 딜레이를 줘서 "촤라라락" 느낌 (최대 200ms)
-                    const delay = Math.random() * 200;
-
-                    // 속도 조절: duration도 약간 랜덤하게? 
-                    // 요구사항: 0.8초 고정, ease-out
-                    strip.style.transition = `transform ${0.6 + Math.random() * 0.4}s cubic-bezier(0.16, 1, 0.3, 1)`;
-
-                    setTimeout(() => {
-                        // 목표 위치로 이동:
-                        // translateY값 계산: -(전체 아이템 수 - 1) * 100 / 전체 아이템 수 % ? 
-                        // 아니, height가 1.2em이므로, translateY를 calc()로 줘도 됨.
-                        // 가장 쉬운 건 item 개수만큼 -1.2em 곱하는 것.
-
-                        strip.style.transform = `translateY(calc(-${totalItems - 1} * 1.2em))`;
-                    }, delay);
-
-                }, 50);
-            }
-        }
-
-        element.appendChild(digitWrapper);
-    });
-}
-
-// 롤링 상태 관리
-let rollingEndTime = 0;
 
 // 랜덤한 통합 형식 문자열 생성
 function getRandomUnified() {
@@ -296,33 +193,14 @@ function updateCounters() {
     // 다가오는 수능 (2027학년도)
     const upcomingDiff = CSAT_DATES[2027] - now;
 
-    if (isSlotMachineRunning) {
-        // 애니메이션 중에는 업데이트 하지 않음 (초기값 유지)
-        // 단, 처음 한 번은 DOM을 만들어야 함. index init에서 처리?
-        // 여기서 체크해서 비어있으면 생성
-        if (!elements.upcomingUnified.classList.contains('slot-wrapper') && upcomingDiff > 0) {
-            initSlotMachine(elements.upcomingUnified, formatUnified(upcomingDiff));
-        }
-    } else {
-        elements.upcomingUnified.textContent = formatUnified(upcomingDiff);
-        // 슬롯머신 클래스 제거 (필요하다면)
-        elements.upcomingUnified.classList.remove('slot-wrapper');
-    }
+    elements.upcomingUnified.textContent = formatUnified(upcomingDiff);
 
     elements.upcomingWeekends.textContent = countWeekendsAccurate(CSAT_DATES[2027]);
 
     // 그 다음 수능 (2028학년도)
     const nextDiff = CSAT_DATES[2028] - now;
 
-    if (isSlotMachineRunning) {
-        if (!elements.nextUnified.classList.contains('slot-wrapper') && nextDiff > 0) {
-            initSlotMachine(elements.nextUnified, formatUnified(nextDiff));
-        }
-    } else {
-        elements.nextUnified.textContent = formatUnified(nextDiff);
-        // 슬롯머신 클래스 제거 (필요하다면)
-        elements.nextUnified.classList.remove('slot-wrapper');
-    }
+    elements.nextUnified.textContent = formatUnified(nextDiff);
 
     elements.nextWeekends.textContent = countWeekendsAccurate(CSAT_DATES[2028]);
 
@@ -338,10 +216,6 @@ function updateCounters() {
         updateMilestones();
     }
 
-    // 애니메이션 종료 체크
-    if (isSlotMachineRunning && Date.now() > rollingEndTime) {
-        isSlotMachineRunning = false;
-    }
 
     // 다음 프레임 요청
     requestAnimationFrame(updateCounters);
@@ -449,8 +323,6 @@ function init() {
     elements.themeToggle.addEventListener('click', toggleTheme);
     setupMobileToolPopup();
 
-    // 롤링 종료 시간 설정 (슬롯머신 지속시간 + 여유분)
-    rollingEndTime = Date.now() + SLOT_DURATION + 200;
 
     requestAnimationFrame(updateCounters);
 }
