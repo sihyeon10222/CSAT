@@ -10,61 +10,224 @@
 </head>
 
 <body>
-    <button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
-        <span class="icon-sun">🌙</span>
-        <span class="icon-moon">☀️</span>
-    </button>
+    <!-- 테마 토글 및 모바일 아이콘 -->
+    <div class="fixed-buttons">
+        <button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+            <span class="icon-sun">🌙</span>
+            <span class="icon-moon">☀️</span>
+        </button>
+        <!-- 모바일 전용 타이머/스톱워치 아이콘 -->
+        <button class="mobile-tool-btn mobile-only" id="mobileTimerBtn" aria-label="타이머">
+            ⏱️
+        </button>
+        <button class="mobile-tool-btn mobile-only" id="mobileStopwatchBtn" aria-label="스톱워치">
+            ⏰
+        </button>
+    </div>
 
-    <main class="container">
-        <!-- 지난 수능 -->
-        <section class="dday-section past">
-            <h2 class="dday-year">2026 대학수학능력시험</h2>
-            <p class="dday-label">2025년 11월 13일 (목)</p>
-            <div class="dday-counter" id="pastDday">
-                <span class="dday-unified" id="pastUnified">000:00:00:00:00</span>
-            </div>
-            <div class="dday-passed-label">
-                <span id="pastDaysAgo">0</span>일 전
-            </div>
-        </section>
+    <div class="main-layout">
+        <!-- 달력 (PC: 왼쪽 사이드바) -->
+        <aside class="sidebar sidebar-left desktop-only">
+            <section class="tool-section calendar-section">
+                <div class="calendar-container" id="calendarContainer">
+                    <!-- 달력이 JS로 동적 생성됩니다 -->
+                </div>
+            </section>
+        </aside>
 
-        <!-- 다가오는 수능 -->
-        <section class="dday-section upcoming">
-            <h2 class="dday-year">2027 대학수학능력시험</h2>
-            <p class="dday-label">2026년 11월 19일 (목)</p>
-            <div class="dday-counter" id="upcomingDday">
-                <span class="dday-unified rainbow" id="upcomingUnified">000:00:00:00:00</span>
-            </div>
-            <div class="dday-weekends">
-                주말 <span id="upcomingWeekends">0</span>번 남음
-            </div>
-            <div class="progress-container">
-                <div class="progress-wrapper">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-wave"></div>
+        <!-- 메인 컨텐츠 (D-day 카드) -->
+        <main class="container">
+            <!-- 지난 수능 -->
+            <section class="dday-section past">
+                <h2 class="dday-year">2026 대학수학능력시험</h2>
+                <p class="dday-label">2025년 11월 13일 (목)</p>
+                <div class="dday-counter" id="pastDday">
+                    <span class="dday-unified" id="pastUnified">000:00:00:00:00</span>
+                </div>
+                <div class="dday-passed-label">
+                    <span id="pastDaysAgo">0</span>일 전
+                </div>
+            </section>
+
+            <!-- 다가오는 수능 -->
+            <section class="dday-section upcoming">
+                <h2 class="dday-year">2027 대학수학능력시험</h2>
+                <p class="dday-label">2026년 11월 19일 (목)</p>
+                <div class="dday-counter" id="upcomingDday">
+                    <span class="dday-unified rainbow" id="upcomingUnified">000:00:00:00:00</span>
+                </div>
+                <div class="dday-weekends">
+                    주말 <span id="upcomingWeekends">0</span>번 남음
+                </div>
+                <div class="progress-container">
+                    <div class="progress-wrapper">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-wave"></div>
+                        </div>
+                        <div class="milestones-container" id="milestonesContainer">
+                            <!-- 모의고사 마커가 여기에 삽입됩니다 -->
+                        </div>
                     </div>
-                    <div class="milestones-container" id="milestonesContainer">
-                        <!-- 모의고사 마커가 여기에 삽입됩니다 -->
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+            </section>
+
+            <!-- 그 다음 수능 -->
+            <section class="dday-section next">
+                <h2 class="dday-year">2028 대학수학능력시험</h2>
+                <p class="dday-label">2027년 11월 18일 (목)</p>
+                <div class="dday-counter" id="nextDday">
+                    <span class="dday-unified" id="nextUnified">000:00:00:00:00</span>
+                </div>
+                <div class="dday-weekends">
+                    주말 <span id="nextWeekends">0</span>번 남음
+                </div>
+            </section>
+        </main>
+
+        <!-- 스톱워치 + 타이머 (PC: 오른쪽 사이드바) -->
+        <aside class="sidebar sidebar-right desktop-only">
+            <!-- 스톱워치 -->
+            <section class="tool-section stopwatch-section">
+                <h3 class="tool-title">스톱워치</h3>
+                <!-- 아날로그 스톱워치 -->
+                <div class="stopwatch-analog">
+                    <svg class="stopwatch-svg" viewBox="0 0 100 100">
+                        <circle class="sw-face" cx="50" cy="50" r="45" />
+                        <!-- 눈금 -->
+                        <g class="sw-ticks" id="swTicks"></g>
+                        <!-- 바늘 -->
+                        <line class="sw-hand" x1="50" y1="50" x2="50" y2="12" id="swHand" />
+                        <circle class="sw-center" cx="50" cy="50" r="3" />
+                    </svg>
+                </div>
+                <!-- 디지털 표시 -->
+                <div class="stopwatch-digital">
+                    <span id="swDisplay">00:00:00.00</span>
+                </div>
+                <!-- 조작 버튼 -->
+                <div class="stopwatch-controls">
+                    <button class="control-btn primary" id="swStartBtn">시작</button>
+                    <button class="control-btn secondary" id="swResetBtn">초기화</button>
+                </div>
+            </section>
+
+            <!-- 타이머 -->
+            <section class="tool-section timer-section">
+                <div class="tool-header">
+                    <h3 class="tool-title">타이머</h3>
+                    <button id="timerSoundBtn" class="sound-toggle-btn" title="소리 켜기/끄기">
+                        <svg class="sound-on-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M11 4.702a.705.705 0 0 0-1.203-.498L5.413 8.587A.706.706 0 0 1 4.912 8.8H3a1 1 0 0 0-1 1v4.4a1 1 0 0 0 1 1h1.912a.706.706 0 0 1 .501.213l4.384 4.383c.433.433 1.203.127 1.203-.498z" />
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                        </svg>
+                        <svg class="sound-off-icon hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M11 4.702a.705.705 0 0 0-1.203-.498L5.413 8.587A.706.706 0 0 1 4.912 8.8H3a1 1 0 0 0-1 1v4.4a1 1 0 0 0 1 1h1.912a.706.706 0 0 1 .501.213l4.384 4.383c.433.433 1.203.127 1.203-.498z" />
+                            <line x1="22" x2="16" y1="9" y2="15" />
+                            <line x1="16" x2="22" y1="9" y2="15" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- 뽀모도로 시계판 -->
+                <div class="pomodoro-clock">
+                    <svg class="clock-svg" viewBox="0 0 100 100">
+                        <circle class="clock-bg" cx="50" cy="50" r="45" />
+                        <circle class="clock-progress" cx="50" cy="50" r="45" id="timerProgress" />
+                        <text class="clock-text" x="50" y="50" text-anchor="middle" dominant-baseline="central"
+                            id="timerDisplay">00:00</text>
+                    </svg>
+                </div>
+                <!-- 시간 입력 (화살표 포함) -->
+                <div class="timer-inputs">
+                    <div class="time-input-group">
+                        <button class="arrow-btn up" data-target="timerHours" data-dir="up">▲</button>
+                        <input type="number" id="timerHours" min="0" max="99" value="0" readonly>
+                        <button class="arrow-btn down" data-target="timerHours" data-dir="down">▼</button>
+                        <span class="time-label">시</span>
+                    </div>
+                    <div class="time-input-group">
+                        <button class="arrow-btn up" data-target="timerMinutes" data-dir="up">▲</button>
+                        <input type="number" id="timerMinutes" min="0" max="59" value="0" readonly>
+                        <button class="arrow-btn down" data-target="timerMinutes" data-dir="down">▼</button>
+                        <span class="time-label">분</span>
+                    </div>
+                    <div class="time-input-group">
+                        <button class="arrow-btn up" data-target="timerSeconds" data-dir="up">▲</button>
+                        <input type="number" id="timerSeconds" min="0" max="59" value="0" readonly>
+                        <button class="arrow-btn down" data-target="timerSeconds" data-dir="down">▼</button>
+                        <span class="time-label">초</span>
                     </div>
                 </div>
-                <span class="progress-text" id="progressText">0%</span>
-            </div>
-        </section>
+                <!-- 타이머 조작 버튼 -->
+                <div class="timer-controls">
+                    <button class="control-btn primary" id="timerStartBtn">시작</button>
+                    <button class="control-btn secondary" id="timerResetBtn">초기화</button>
+                </div>
+                <!-- 프리셋 버튼 -->
+                <div class="preset-container">
+                    <div class="preset-header">
+                        <span>프리셋</span>
+                        <button class="preset-edit-btn" id="presetEditBtn" title="프리셋 편집">✏️</button>
+                    </div>
+                    <div class="preset-grid" id="presetGrid">
+                        <!-- 프리셋 버튼들이 JS로 동적 생성됩니다 -->
+                    </div>
+                    <button class="preset-add-btn" id="presetAddBtn">+ 프리셋 추가</button>
+                </div>
+            </section>
+        </aside>
+    </div>
 
-        <!-- 그 다음 수능 -->
-        <section class="dday-section next">
-            <h2 class="dday-year">2028 대학수학능력시험</h2>
-            <p class="dday-label">2027년 11월 18일 (목)</p>
-            <div class="dday-counter" id="nextDday">
-                <span class="dday-unified" id="nextUnified">000:00:00:00:00</span>
+    <!-- 프리셋 편집 모달 -->
+    <div class="modal-overlay" id="presetModal">
+        <div class="modal-content">
+            <h3>프리셋 편집</h3>
+            <div class="preset-edit-list" id="presetEditList">
+                <!-- 프리셋 편집 항목들이 JS로 동적 생성됩니다 -->
             </div>
-            <div class="dday-weekends">
-                주말 <span id="nextWeekends">0</span>번 남음
+            <div class="modal-actions">
+                <button class="control-btn secondary" id="presetModalClose">닫기</button>
+                <button class="control-btn primary" id="presetModalSave">저장</button>
             </div>
-        </section>
-    </main>
+        </div>
+    </div>
+
+    <!-- 모바일 안내 팝업 -->
+    <div class="modal-overlay" id="mobileToolModal">
+        <div class="modal-content mobile-notice">
+            <p>📱</p>
+            <p>태블릿/PC환경으로<br>접속해주세요</p>
+            <button class="control-btn primary" id="mobileToolModalClose">확인</button>
+        </div>
+    </div>
 
     <script src="index.js"></script>
+    <!-- 알림 팝업 -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- 타이머 종료 모달 -->
+    <div id="timerFinishModal" class="timer-finish-overlay">
+        <div class="timer-finish-content">
+            <div class="timer-finish-icon">⏰</div>
+            <h2>타이머가 종료되었습니다!</h2>
+            <p>설정하신 시간이 모두 경과했습니다.</p>
+            <div class="timer-finish-actions">
+                <button id="timerFinishRestart" class="control-btn primary">다시 시작</button>
+                <button id="timerFinishClose" class="control-btn secondary">종료</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="timer.js"></script>
+    <script src="stopwatch.js"></script>
+    <script src="calendar.js"></script>
 </body>
 
 </html>
