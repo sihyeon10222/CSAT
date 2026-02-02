@@ -1,0 +1,405 @@
+/* CSS Variables for Theme */
+:root {
+    --bg-color: #0a0a0f;
+    --text-color: #ffffff;
+    --text-secondary: #a0a0a0;
+    --card-bg: #1a1a2e;
+    --progress-bg: #2a2a3e;
+    --progress-fill: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #1a1a2e;
+    --text-secondary: #666666;
+    --card-bg: #f8f9fa;
+    --progress-bg: #e0e0e0;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* prefers-color-scheme removed */
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    z-index: 1000;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+.theme-toggle .icon-sun {
+    display: none;
+}
+
+.theme-toggle .icon-moon {
+    display: block;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun {
+    display: block;
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+    display: none;
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 1.5rem;
+    gap: 1.5rem;
+}
+
+/* D-day Section */
+.dday-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dday-year {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+}
+
+.dday-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+/* dday-date style removed since it merged into dday-label */
+
+.dday-counter {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+}
+
+/* dday-prefix removed */
+
+.dday-number,
+.dday-unified {
+    font-size: 3.5rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.05em;
+    font-family: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+@media (max-width: 480px) {
+    .dday-unified {
+        font-size: 2.2rem;
+    }
+}
+
+/* Rainbow Gradient Animation */
+.rainbow {
+    background: linear-gradient(90deg,
+            #ff0000,
+            #ff8000,
+            #ffff00,
+            #00ff00,
+            #00ffff,
+            #0080ff,
+            #8000ff,
+            #ff0080,
+            #ff0000);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rainbow-shift 3s linear infinite;
+}
+
+@keyframes rainbow-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* dday-time style removed */
+
+.dday-weekends,
+.dday-passed-label {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.dday-weekends span,
+.dday-passed-label span {
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+/* Progress Bar & Milestones */
+.progress-container {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.progress-wrapper {
+    flex: 1;
+    position: relative;
+    padding-bottom: 2.5rem;
+    /* Space for milestones */
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--progress-bg);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--progress, 0%);
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    border-radius: 6px;
+    transition: width 0.1s linear;
+}
+
+/* Windows 11 Wave Animation - Enhanced */
+.progress-wave {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--progress, 0%);
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.progress-wave::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            transparent 20%,
+            rgba(255, 255, 255, 0.3) 30%,
+            rgba(255, 255, 255, 0.7) 50%,
+            rgba(255, 255, 255, 0.3) 70%,
+            transparent 80%,
+            transparent 100%);
+    animation: wave-sweep 1.5s ease-in-out infinite;
+}
+
+@keyframes wave-sweep {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    min-width: 45px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    margin-top: -2px;
+}
+
+.milestones-container {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+}
+
+.milestone-marker {
+    position: absolute;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.milestone-line {
+    width: 2px;
+    height: 6px;
+    background: var(--text-secondary);
+    opacity: 0.5;
+    margin-bottom: 2px;
+}
+
+.milestone-box {
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding: 6px 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.exam-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+.exam-dday {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+/* Tooltip arrow */
+.milestone-box::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid var(--card-bg);
+}
+
+/* Past D-day Styling */
+.dday-section.past {
+    opacity: 0.7;
+}
+
+.dday-section.past .dday-number {
+    color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .container {
+        padding: 2rem 3rem;
+        gap: 2rem;
+    }
+
+    .dday-section {
+        padding: 2rem;
+    }
+
+    .dday-year {
+        font-size: 1.4rem;
+    }
+
+    .dday-label {
+        font-size: 1rem;
+    }
+
+    .dday-unified {
+        font-size: 4rem;
+    }
+
+    .dday-time {
+        font-size: 1.3rem;
+    }
+
+    .progress-bar {
+        height: 16px;
+        border-radius: 8px;
+    }
+
+    .progress-bar::before {
+        border-radius: 8px;
+    }
+
+    .progress-wave {
+        border-radius: 8px;
+    }
+
+    .progress-text {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .dday-unified {
+        font-size: 5rem;
+    }
+
+    .progress-container {
+        max-width: 100%;
+    }
+}

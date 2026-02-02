@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수능 D-day 카운터</title>
+    <meta name="description" content="수능 D-day를 실시간으로 확인하세요. 밀리초 단위 카운트다운과 주말 카운터를 제공합니다.">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="테마 변경">
+        <span class="icon-sun">🌙</span>
+        <span class="icon-moon">☀️</span>
+    </button>
+
+    <main class="container">
+        <!-- 지난 수능 -->
+        <section class="dday-section past">
+            <h2 class="dday-year">2026 대학수학능력시험</h2>
+            <p class="dday-label">2025년 11월 13일 (목)</p>
+            <div class="dday-counter" id="pastDday">
+                <span class="dday-unified" id="pastUnified">000:00:00:00:00</span>
+            </div>
+            <div class="dday-passed-label">
+                <span id="pastDaysAgo">0</span>일 전
+            </div>
+        </section>
+
+        <!-- 다가오는 수능 -->
+        <section class="dday-section upcoming">
+            <h2 class="dday-year">2027 대학수학능력시험</h2>
+            <p class="dday-label">2026년 11월 19일 (목)</p>
+            <div class="dday-counter" id="upcomingDday">
+                <span class="dday-unified rainbow" id="upcomingUnified">000:00:00:00:00</span>
+            </div>
+            <div class="dday-weekends">
+                주말 <span id="upcomingWeekends">0</span>번 남음
+            </div>
+            <div class="progress-container">
+                <div class="progress-wrapper">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-wave"></div>
+                    </div>
+                    <div class="milestones-container" id="milestonesContainer">
+                        <!-- 모의고사 마커가 여기에 삽입됩니다 -->
+                    </div>
+                </div>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+        </section>
+
+        <!-- 그 다음 수능 -->
+        <section class="dday-section next">
+            <h2 class="dday-year">2028 대학수학능력시험</h2>
+            <p class="dday-label">2027년 11월 18일 (목)</p>
+            <div class="dday-counter" id="nextDday">
+                <span class="dday-unified" id="nextUnified">000:00:00:00:00</span>
+            </div>
+            <div class="dday-weekends">
+                주말 <span id="nextWeekends">0</span>번 남음
+            </div>
+        </section>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
