@@ -32,7 +32,6 @@ const Timer = (() => {
         startBtn: document.getElementById('timerStartBtn'),
         resetBtn: document.getElementById('timerResetBtn'),
         presetGrid: document.getElementById('presetGrid'),
-        presetEditBtn: document.getElementById('presetEditBtn'),
         presetAddBtn: document.getElementById('presetAddBtn'),
         soundBtn: document.getElementById('timerSoundBtn'),
         notificationContainer: document.getElementById('notificationContainer'),
@@ -47,6 +46,8 @@ const Timer = (() => {
         editList: document.getElementById('presetEditList'),
         closeBtn: document.getElementById('presetModalClose'),
         saveBtn: document.getElementById('presetModalSave'),
+        addInsideBtn: document.getElementById('presetModalAddInside'),
+        resetBtn: document.getElementById('presetModalReset'),
     };
 
     // 시계판 업데이트 (SVG arc)
@@ -284,11 +285,21 @@ const Timer = (() => {
 
         modal.editList.innerHTML = '';
         presets.forEach((preset, index) => {
+            const h = Math.floor(preset.seconds / 3600);
+            const m = Math.floor((preset.seconds % 3600) / 60);
+            const s = preset.seconds % 60;
+
             const item = document.createElement('div');
             item.className = 'preset-edit-item';
             item.innerHTML = `
                 <input type="text" value="${preset.label}" data-index="${index}" data-field="label" placeholder="라벨">
-                <input type="number" value="${preset.seconds}" data-index="${index}" data-field="seconds" placeholder="초">
+                <div class="preset-time-inputs">
+                    <input type="number" value="${h}" data-index="${index}" data-field="h" placeholder="시" min="0" max="99">
+                    <span>:</span>
+                    <input type="number" value="${m}" data-index="${index}" data-field="m" placeholder="분" min="0" max="59">
+                    <span>:</span>
+                    <input type="number" value="${s}" data-index="${index}" data-field="s" placeholder="초" min="0" max="59">
+                </div>
                 <button class="delete-btn" data-index="${index}">삭제</button>
             `;
             modal.editList.appendChild(item);
@@ -312,9 +323,13 @@ const Timer = (() => {
         presets = [];
         items.forEach(item => {
             const label = item.querySelector('input[data-field="label"]').value;
-            const seconds = parseInt(item.querySelector('input[data-field="seconds"]').value) || 0;
-            if (label && seconds > 0) {
-                presets.push({ label, seconds });
+            const h = parseInt(item.querySelector('input[data-field="h"]').value) || 0;
+            const m = Math.min(59, parseInt(item.querySelector('input[data-field="m"]').value) || 0);
+            const s = Math.min(59, parseInt(item.querySelector('input[data-field="s"]').value) || 0);
+            const total = h * 3600 + m * 60 + s;
+
+            if (label && total > 0) {
+                presets.push({ label, seconds: total });
             }
         });
         localStorage.setItem('timerPresets', JSON.stringify(presets));
@@ -330,6 +345,18 @@ const Timer = (() => {
     function addPreset() {
         presets.push({ label: '새 프리셋', seconds: 300 });
         openPresetModal();
+    }
+
+    // 프리셋 초기화
+    function resetPresetsToDefault() {
+        if (confirm('모든 프리셋을 초기 상태로 되돌리시겠습니까?')) {
+            presets = [...DEFAULT_PRESETS];
+            localStorage.setItem('timerPresets', JSON.stringify(presets));
+            renderPresets();
+            if (modal.overlay.classList.contains('active')) {
+                openPresetModal(); // 모달이 열려있으면 갱신
+            }
+        }
     }
 
     function handleArrowClick(e) {
@@ -365,12 +392,27 @@ const Timer = (() => {
     function bindEvents() {
         elements.startBtn?.addEventListener('click', toggleStart);
         elements.resetBtn?.addEventListener('click', reset);
-        elements.presetEditBtn?.addEventListener('click', openPresetModal);
-        elements.presetAddBtn?.addEventListener('click', addPreset);
+        elements.presetAddBtn?.addEventListener('click', openPresetModal);
 
         // 모달
         modal.closeBtn?.addEventListener('click', closePresetModal);
         modal.saveBtn?.addEventListener('click', savePresets);
+        modal.resetBtn?.addEventListener('click', resetPresetsToDefault);
+        modal.addInsideBtn?.addEventListener('click', () => {
+            // 현재 입력된 것들을 임시로 저장하고 새 항목 추가
+            const items = modal.editList.querySelectorAll('.preset-edit-item');
+            const currentPresets = [];
+            items.forEach(item => {
+                const label = item.querySelector('input[data-field="label"]').value;
+                const h = parseInt(item.querySelector('input[data-field="h"]').value) || 0;
+                const m = parseInt(item.querySelector('input[data-field="m"]').value) || 0;
+                const s = parseInt(item.querySelector('input[data-field="s"]').value) || 0;
+                currentPresets.push({ label, seconds: h * 3600 + m * 60 + s });
+            });
+            currentPresets.push({ label: '', seconds: 0 });
+            presets = currentPresets;
+            openPresetModal();
+        });
         modal.overlay?.addEventListener('click', (e) => {
             if (e.target === modal.overlay) closePresetModal();
         });

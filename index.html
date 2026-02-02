@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수능 D-day 카운터</title>
     <meta name="description" content="수능 D-day를 실시간으로 확인하세요. 밀리초 단위 카운트다운과 주말 카운터를 제공합니다.">
+    <meta property="og:title" content="수능 D-day 카운터">
+    <meta property="og:description" content="수능 D-day를 실시간으로 확인하세요. 밀리초 단위 카운트다운과 주말 카운터를 제공합니다.">
+    <meta property="og:image" content="https://i.imgur.com/67IERaS.jpg">
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="index.css">
 </head>
 
@@ -174,12 +178,11 @@
                 <div class="preset-container">
                     <div class="preset-header">
                         <span>프리셋</span>
-                        <button class="preset-edit-btn" id="presetEditBtn" title="프리셋 편집">✏️</button>
                     </div>
                     <div class="preset-grid" id="presetGrid">
                         <!-- 프리셋 버튼들이 JS로 동적 생성됩니다 -->
                     </div>
-                    <button class="preset-add-btn" id="presetAddBtn">+ 프리셋 추가</button>
+                    <button class="preset-add-btn" id="presetAddBtn">+ 프리셋 편집</button>
                 </div>
             </section>
         </aside>
@@ -189,10 +192,17 @@
     <div class="modal-overlay" id="presetModal">
         <div class="modal-content">
             <h3>프리셋 편집</h3>
+            <div class="preset-modal-header">
+                <span>프리셋 이름</span>
+                <span>시간 (시:분:초)</span>
+            </div>
             <div class="preset-edit-list" id="presetEditList">
                 <!-- 프리셋 편집 항목들이 JS로 동적 생성됩니다 -->
             </div>
             <div class="modal-actions">
+                <button class="control-btn danger" id="presetModalReset">초기화</button>
+                <button class="control-btn secondary" id="presetModalAddInside">+ 추가</button>
+                <div style="flex: 1;"></div>
                 <button class="control-btn secondary" id="presetModalClose">닫기</button>
                 <button class="control-btn primary" id="presetModalSave">저장</button>
             </div>
