@@ -101,7 +101,10 @@ const Calendar = (() => {
 
     // 이번 달로 스크롤
     function scrollToCurrentMonth() {
-        if (currentMonthElement) {
+        const todayElement = container.querySelector('.today');
+        if (todayElement) {
+            todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (currentMonthElement) {
             currentMonthElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
@@ -156,11 +159,12 @@ const Calendar = (() => {
             container.appendChild(monthGrid);
         }
 
-        // 초기 스크롤 위치를 이번 달로 설정
-        if (currentMonthElement) {
+        // 초기 스크롤 위치를 '오늘' 날짜로 설정
+        const todayElement = container.querySelector('.today');
+        if (todayElement) {
             setTimeout(() => {
-                currentMonthElement.scrollIntoView({ block: 'start' });
-            }, 0);
+                todayElement.scrollIntoView({ behavior: 'auto', block: 'center' });
+            }, 100);
         }
     }
 
